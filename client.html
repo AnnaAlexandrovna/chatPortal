@@ -1,0 +1,47 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
+<textarea type='text' id='text_field' style='width:100%; height:20%;'>
+{
+"command":"message_create",
+"message":"Текст создаваемого сообщения",
+"user_key":"5fde04edbe0a9",
+"time":1597049243807
+}
+</textarea>
+
+<script>
+let siId=null;
+
+text_field.addEventListener("keyup",(e)=>{
+if ((e.keyCode==13) && (socket.readyState==1)) {socket.send(text_field.value); e.preventDefault();} //text_field.value="";
+});
+
+
+let socket = new WebSocket("ws://127.0.0.1:5025");
+
+socket.onopen = function(e) {console.log("Соединение установлено");};
+
+socket.onmessage = function(event) {  
+console.log(`Данные получены с сервера`);
+let json=JSON.parse(event.data);
+console.log(json);
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    console.log(`Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
+  } else {
+    console.log('Соединение прервано');
+  }
+};
+
+socket.onerror = function(error) {
+  console.log(`Ошибка ${error.message}`);
+};
+
+</script>
+</body>
+</html>
